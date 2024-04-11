@@ -1,0 +1,20 @@
+<%= render partial: "shared/top_bar", locals: {
+  session: @session,
+} %>
+
+<main class="container">
+  <section class="container mb-5">
+    <h2>Health Metrics</h2>
+    <%= render partial: "shared/index_layout", locals: { resource: @health_metrics, heading: "created_at", fields: [
+      'height',
+      'weight',
+      'bmi',
+      'hydration',
+      'muscle_mass',
+      'caloric_intake',
+      'caloric_burn',
+      'steps',
+      'sleep_quality',
+      'resting_heart_rate']} %>
+  </section>
+</main>

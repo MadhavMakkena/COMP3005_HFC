@@ -1,0 +1,17 @@
+<%= render partial: "shared/top_bar", locals: {
+  session: @session,
+} %>
+
+<% fields = [
+  { name: :height, field_type: :text_field },
+  { name: :weight, field_type: :text_field },
+  { name: :hydration, field_type: :text_field },
+  { name: :muscle_mass, field_type: :text_field },
+  { name: :caloric_intake, field_type: :text_field },
+  { name: :caloric_burn, field_type: :text_field },
+  { name: :steps, field_type: :text_field },
+  { name: :sleep_quality, field_type: :text_field },
+  { name: :resting_heart_rate, field_type: :text_field },
+] %>
+
+<%= render partial: "shared/new_edit_form", locals: { resource: @health_metric, fields: fields, cancel_path: root_path } %>

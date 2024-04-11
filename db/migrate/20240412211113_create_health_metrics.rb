@@ -1,4 +1,4 @@
-class CreateHealthMetric < ActiveRecord::Migration[7.1]
+class CreateHealthMetrics < ActiveRecord::Migration[7.1]
   def change
     create_table :health_metrics do |t|
       t.references :user, null: false, foreign_key: true

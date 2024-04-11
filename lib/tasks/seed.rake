@@ -48,7 +48,7 @@ namespace :db do
     require 'active_record'
     require 'faker'
 
-    member_ids = User.where(role: 0).pluck(:id)
+    member_ids = User.where(role: :member).pluck(:id)
 
     health_metrics_seed = "\n\n-- Seed Health Metrics --\n"
     health_metrics_seed += "INSERT INTO health_metrics (user_id, height, weight, bmi, hydration, muscle_mass, caloric_intake, caloric_burn, steps, sleep_quality, resting_heart_rate, created_at, updated_at) VALUES\n"
@@ -99,8 +99,8 @@ def create_health_metric_data(user_id)
     steps = Faker::Number.between(from: 1000, to: 10000)
     sleep_quality = Faker::Number.between(from: 1, to: 10)
     resting_heart_rate = Faker::Number.between(from: 60, to: 100)
-    created_at = Time.now.utc
-    updated_at = Time.now.utc
+    created_at = Faker::Date.between(from: 1.year.ago, to: Date.today)
+    updated_at = Faker::Date.between(from: created_at, to: Date.today)
 
     sql_fragment << "(#{user_id}, #{height}, #{weight}, #{bmi}, #{hydration}, #{muscle_mass}, #{caloric_intake}, #{caloric_burn}, #{steps}, #{sleep_quality}, #{resting_heart_rate}, '#{created_at}', '#{updated_at}')"
   end

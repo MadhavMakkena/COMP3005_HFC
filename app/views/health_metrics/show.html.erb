@@ -1,0 +1,21 @@
+<%= render partial: "shared/top_bar", locals: {
+  session: @session,
+} %>
+
+<%= render partial: "shared/show_layout", locals: {
+  resource: @health_metric,
+  fields: [
+    'created_at',
+    'height',
+    'weight',
+    'bmi',
+    'hydration',
+    'muscle_mass',
+    'caloric_intake',
+    'caloric_burn',
+    'steps',
+    'sleep_quality',
+    'resting_heart_rate'],
+  back_path: root_path,
+  options: { delete_button: true }
+} %>

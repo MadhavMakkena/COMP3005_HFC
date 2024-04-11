@@ -7,7 +7,7 @@
   { name: :last_name, field_type: :text_field },
   { name: :email, field_type: :text_field },
   { name: :date_of_birth, field_type: :text_field },
-  { name: :role, field_type: :check_box},
+  { name: :role, field_type: :collection_select , options: { collection: User.roles.keys, value_method: :to_s, text_method: :humanize } },
 ] %>
 
 <%= render partial: "shared/new_edit_form", locals: { resource: @user, fields: fields, cancel_path: users_path } %>

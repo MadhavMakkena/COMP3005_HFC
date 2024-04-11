@@ -12,7 +12,9 @@ class UsersController < ApplicationController
     @session = current_user
     @user = User.find(params[:id])
 
-    redirect_to root_path, alert: "You do not have permission to view this user" if current_user.id != @user.id
+    unless current_user.admin? || current_user.trainer?
+      redirect_to root_path, alert: "You do not have permission to view this user" if current_user.id != @user.id
+    end
   end
 
   def new

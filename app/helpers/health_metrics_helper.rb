@@ -1,0 +1,2 @@
+module HealthMetricsHelper
+end

@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :health_metrics
   # Set the root url
   get "home/index"
   root to: "home#index"

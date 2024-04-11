@@ -4,7 +4,17 @@
 
 <main class="container">
   <section class="container mb-5">
-    <h2>Users</h2>
-    <%= render partial: "shared/index_layout", locals: { resource: @users, heading: "first_name", fields: ["last_name", "role", "email"] } %>
+    <h2>Members</h2>
+    <%= render partial: "shared/index_layout", locals: { resource: @users.where(role: 0), heading: "first_name", fields: ["last_name", "role", "email"] } %>
+  </section>
+
+  <section class="container mb-5">
+    <h2>Trainers</h2>
+    <%= render partial: "shared/index_layout", locals: { resource: @users.where(role: 1), heading: "first_name", fields: ["last_name", "role", "email"] } %>
+  </section>
+
+  <section class="container mb-5">
+    <h2>Admins</h2>
+    <%= render partial: "shared/index_layout", locals: { resource: @users.where(role: 2), heading: "first_name", fields: ["last_name", "role", "email"] } %>
   </section>
 </main>

@@ -31,7 +31,7 @@
             </div>
           <% end %>
         </div>
-        <% if @session.admin? %>
+        <% if @session.admin? || options[:delete_button] %>
         <div class="card-footer d-flex justify-content-end">
           <%= link_to "Edit", edit_polymorphic_path(resource), class: "btn btn-outline-primary me-2" %>
           <%= link_to "Back", back_path, class: "btn btn-outline-secondary me-2" %>

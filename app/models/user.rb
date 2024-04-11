@@ -5,15 +5,26 @@ class User < ApplicationRecord
   validates :email, uniqueness: { case_sensitive: false }
   validates :role, inclusion: { in: roles.keys }
 
-  before_save :downcase_email, :capitalize_and_clean_name, :age
+  before_validation :downcase_email, :capitalize_and_clean_name, :date_of_birth_check
+  before_save :downcase_email, :capitalize_and_clean_name, :date_of_birth_check
+
+  has_many :health_metrics, dependent: :destroy
 
   private
 
-  def age
-    if date_of_birth.present? && date_of_birth < 18.years.ago && date_of_birth > 65.years.ago
-      errors.add(:date_of_birth, "must be between 18 and 65 years old")
+  def date_of_birth_check
+    begin
+      parsed_date = Date.parse(date_of_birth.to_s)
+    rescue ArgumentError
+      errors.add(:date_of_birth, "is invalid. Please enter a date in YYYY-MM-DD format.")
+      return
+    end
+
+    if parsed_date < 100.years.ago.to_date || parsed_date > 18.years.ago.to_date
+      errors.add(:date_of_birth, "must be between 18 and 100 years old")
     end
   end
+
 
   def downcase_email
     self.email = email.downcase
