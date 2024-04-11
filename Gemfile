@@ -54,3 +54,5 @@ group :development do
   # gem "spring"
 end
 
+# Gems for app functionality
+gem 'faker', '~> 3.3', '>= 3.3.1'
