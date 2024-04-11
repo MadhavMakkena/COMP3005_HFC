@@ -22,8 +22,3 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
-
-- `bundle install`
-- `rails db:create`
-- `rails db:migrate`
-
