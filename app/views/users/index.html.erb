@@ -1,0 +1,10 @@
+<%= render partial: "shared/top_bar", locals: {
+  session: @session,
+} %>
+
+<main class="container">
+  <section class="container mb-5">
+    <h2>Users</h2>
+    <%= render partial: "shared/index_layout", locals: { resource: @users, heading: "first_name", fields: ["last_name", "role", "email"] } %>
+  </section>
+</main>

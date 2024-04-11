@@ -1,0 +1,46 @@
+<div class="container h-100">
+  <div class="row h-100 mt-5 justify-content-center align-items-center">
+    <div class="col mt-5 d-flex align-items-center justify-content-center flex-grow-1">
+      <div class="card mt-5">
+        <div class="card-body my-3 mx-5">
+          <% fields.each do |field| %>
+            <div class="form-group mb-4">
+              <div class="row">
+                <div class="col-md-4">
+                  <small>
+                    <label class="control-label mb-2 text-muted">
+                      <% if field.include?('_id')%>
+                      <%= field.sub(/_id$/, '').capitalize %>
+                      <% elsif field.include?('_') %>
+                      <%= field.split('_').map(&:capitalize).join(' ') %>
+                      <% else %>
+                      <%= field.capitalize %>
+                      <% end %>
+                    </label>
+                  </small>
+                </div>
+                <div class="col-md-8">
+                  <% if field =~ /date/i || resource.send(field).respond_to?(:strftime) %>
+                    <% date = resource.send(field).to_date %>
+                    <p class="card-text"><%= date.strftime("%B %d, %Y") %></p>
+                  <% else %>
+                    <p class="card-text"><%= resource.send(field) %></p>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+        <% if @session.admin? %>
+        <div class="card-footer d-flex justify-content-end">
+          <%= link_to "Edit", edit_polymorphic_path(resource), class: "btn btn-outline-primary me-2" %>
+          <%= link_to "Back", back_path, class: "btn btn-outline-secondary me-2" %>
+          <%= button_to resource, method: :delete, data: { confirm: "Are you sure you want to delete this #{resource.class.name.downcase}?" }, class: "btn btn-outline-danger", form: { class: "d-inline" } do %>
+            Delete
+          <% end %>
+        </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

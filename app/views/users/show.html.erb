@@ -1,0 +1,9 @@
+<%= render partial: "shared/top_bar", locals: {
+  session: @session,
+} %>
+
+<%= render partial: "shared/show_layout", locals: {
+  resource: @user,
+  fields: ["first_name", "last_name", "email", "role", "date_of_birth"],
+  back_path: users_path
+} %>

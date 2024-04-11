@@ -26,6 +26,47 @@ CREATE TABLE public.ar_internal_metadata (
 
 
 --
+-- Name: health_metrics; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.health_metrics (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    height numeric(5,2),
+    weight numeric(5,2),
+    bmi numeric(5,2),
+    hydration integer,
+    muscle_mass numeric(5,2),
+    caloric_intake integer,
+    caloric_burn integer,
+    steps integer,
+    sleep_quality integer,
+    resting_heart_rate integer,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: health_metrics_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.health_metrics_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: health_metrics_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.health_metrics_id_seq OWNED BY public.health_metrics.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -70,6 +111,13 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: health_metrics id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.health_metrics ALTER COLUMN id SET DEFAULT nextval('public.health_metrics_id_seq'::regclass);
+
+
+--
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -82,6 +130,14 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 ALTER TABLE ONLY public.ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: health_metrics health_metrics_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.health_metrics
+    ADD CONSTRAINT health_metrics_pkey PRIMARY KEY (id);
 
 
 --
@@ -101,11 +157,27 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: index_health_metrics_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_health_metrics_on_user_id ON public.health_metrics USING btree (user_id);
+
+
+--
+-- Name: health_metrics fk_rails_7789235dad; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.health_metrics
+    ADD CONSTRAINT fk_rails_7789235dad FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240412211113'),
 ('20240412013014');
 

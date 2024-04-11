@@ -4,11 +4,15 @@ class UsersController < ApplicationController
   def index
     @session = current_user
     @users = User.all
+
+    redirect_to root_path, alert: "You do not have permission to view this user" if !current_user.admin?
   end
 
   def show
     @session = current_user
     @user = User.find(params[:id])
+
+    redirect_to root_path, alert: "You do not have permission to view this user" if current_user.id != @user.id
   end
 
   def new
@@ -49,7 +53,7 @@ class UsersController < ApplicationController
     @session = current_user
     @user = User.find(params[:id])
 
-    if current_user.isAdmin? && current_user.id != @user.id
+    if current_user.admin? && current_user.id != @user.id
       @user.destroy
       redirect_to users_path, notice: "User deleted successfully"
     else

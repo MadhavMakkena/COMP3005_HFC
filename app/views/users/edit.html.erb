@@ -1,0 +1,12 @@
+<%= render partial: "shared/top_bar", locals: {
+  session: @session,
+} %>
+
+<% fields = [
+  { name: :first_name, field_type: :text_field },
+  { name: :last_name, field_type: :text_field },
+  { name: :email, field_type: :text_field },
+  { name: :date_of_birth, field_type: :text_field }
+] %>
+
+<%= render partial: "shared/new_edit_form", locals: { resource: @user, fields: fields, cancel_path: user_path } %>

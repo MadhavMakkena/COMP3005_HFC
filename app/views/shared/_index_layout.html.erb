@@ -1,0 +1,38 @@
+<div class="container mt-5">
+  <div class="row row-cols-3 g-4">
+    <% if @session.admin? %>
+      <div class="col align-self-center d-flex justify-content-center">
+        <%= link_to "Add New #{resource.first.class.name.titleize}", new_polymorphic_path(resource.first.class), class: "btn btn-outline-primary btn-lg btn-block" %>
+      </div>
+    <% end %>
+    <% resource.each do |item| %>
+      <div class="col">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title"><%= item.send(heading) %></h5>
+            <% fields.each do |field| %>
+              <% if defined?(field) %>
+                <% if field == "instructor_id" %>
+                  <% instructor = User.find_by_id(item.send(field)) %>
+                  <p class="card-text"><small><%= field.capitalize.sub!('_id', '')%>:</small> <%= instructor.full_name %></p>
+                <% elsif field.include?('_') %>
+                  <p class="card-text"><small><%= field.capitalize.sub!('_', ' ')%>:</small> <%= item.send(field) %></p>
+                <% else %>
+                  <p class="card-text"><small><%= field.capitalize%>:</small> <%= item.send(field) %></p>
+                <% end %>
+              <% end %>
+            <% end %>
+            <%= link_to "", item, class: "btn btn-link stretched-link" %>
+            <% if defined?(badges) %>
+              <div class="d-flex justify-content-end">
+                <% item.send(badges).each do |badge| %>
+                  <span class="badge text-bg-secondary ms-1"><%= badge.name %></span>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
