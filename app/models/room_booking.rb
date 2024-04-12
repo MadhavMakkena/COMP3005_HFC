@@ -10,10 +10,10 @@ class RoomBooking < ApplicationRecord
     nutrition: 7
   }
 
-  has_many :training_sessions, dependent: :destroy
+  belongs_to :training_session, optional: true
 
   validates :room_name, :booking_time, presence: true
-  validate: :ensure_unique_booking_time_for_room
+  validate :ensure_unique_booking_time_for_room
 
   before_validation :round_off_booking_time, :fill_location
 
@@ -26,7 +26,7 @@ class RoomBooking < ApplicationRecord
   end
 
   def round_off_booking_time
-    self.booking_time = booking_time.beginning_of_hour + 1.hour
+    self.booking_time = booking_time&.beginning_of_hour || Time.now.beginning_of_hour + 1.hour
   end
 
   def fill_location

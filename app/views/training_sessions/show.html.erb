@@ -1,2 +1,14 @@
-<h1>TrainingSessions#show</h1>
-<p>Find me in app/views/training_sessions/show.html.erb</p>
+<%= render partial: "shared/top_bar", locals: {
+  session: current_user,
+} %>
+
+<%= render partial: "shared/show_layout", locals: {
+  resource: @training_session,
+  fields: [
+    'name',
+    'user_id',
+    'description',
+    'room_booking_id'],
+  back_path: root_path,
+  options: { delete_button: true }
+} %>

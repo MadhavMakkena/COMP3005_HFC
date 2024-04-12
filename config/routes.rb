@@ -1,11 +1,13 @@
 Rails.application.routes.draw do
-  resources :health_metrics
   # Set the root url
   get "home/index"
   root to: "home#index"
 
   # Resources
   resources :users
+  resources :health_metrics
+  resources :training_sessions
+  resources :room_bookings
 
   # Login Routes
   post "login", to: "sessions#create"

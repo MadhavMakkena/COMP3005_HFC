@@ -8,6 +8,7 @@ class User < ApplicationRecord
   before_validation :downcase_email, :capitalize_and_clean_name, :date_of_birth_check
 
   has_many :health_metrics, dependent: :destroy
+  has_many :training_sessions, dependent: :destroy
 
   def name
     "#{first_name} #{last_name}"

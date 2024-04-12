@@ -33,6 +33,27 @@
   </div>
 </div>
 <div class="col-md-8 h-100">
-  HELLO WORLD THIS IS THE TRAINERS PAGE, WELCOME TO THE TRAINERS PAGE, HERE IS WHERE YOU CAN SEE ALL THE MEMBERS AND THEIR HEALTH METRICS
+  <div class="h-100 d-flex flex-column">
+    <div class="card mb-3" style="height: 30%; overflow-y: auto;">
+      <div class="card-body">
+        <h5 class="card-title">Trainer's Announcements</h5>
+        <p class="card-text">
+          HELLO WORLD THIS IS THE TRAINERS PAGE, WELCOME TO THE TRAINERS PAGE, HERE IS WHERE YOU CAN SEE ALL THE MEMBERS AND THEIR HEALTH METRICS
+        </p>
+      </div>
+    </div>
+    <div class="card flex-grow-1">
+      <div class="card-body">
+        <main class="container">
+          <section class="container mb-5">
+            <h2>Training Sessions</h2>
+            <%= render partial: "shared/index_layout", locals: { resource: TrainingSession.includes(:user, :room_booking).all, heading: "name", fields: [
+              'user.name',
+              'room_booking.location',
+              'room_booking.booking_time']} %>
+          </section>
+        </main>
+    </div>
+  </div>
 </div>
 

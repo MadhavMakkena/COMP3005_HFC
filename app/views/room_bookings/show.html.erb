@@ -1,2 +1,13 @@
-<h1>RoomBookings#show</h1>
-<p>Find me in app/views/room_bookings/show.html.erb</p>
+<%= render partial: "shared/top_bar", locals: {
+  session: current_user,
+} %>
+
+<%= render partial: "shared/show_layout", locals: {
+  resource: @room_booking,
+  fields: [
+    'room_name',
+    'location',
+    'booking_time'],
+  back_path: root_path,
+  options: { delete_button: true }
+} %>

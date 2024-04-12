@@ -1,29 +1,30 @@
 <div class="container mt-5">
   <div class="row row-cols-3 g-4">
-    <% if current_user.admin? %>
-      <div class="col align-self-center d-flex justify-content-center">
-        <%= link_to "Add New #{resource.first.class.name.titleize}", new_polymorphic_path(resource.first.class), class: "btn btn-outline-primary btn-lg btn-block" %>
-      </div>
-    <% end %>
+    <div class="col align-self-center d-flex justify-content-center">
+      <%= link_to "Add New #{resource.first.class.name.titleize}", new_polymorphic_path(resource.first.class), class: "btn btn-outline-primary btn-lg btn-block" %>
+    </div>
     <% resource.each do |item| %>
       <div class="col">
         <div class="card">
           <div class="card-body">
             <% if heading.include?('created_at') %>
-              <h5 class="card-title mb-4"><%= item.send(heading).strftime("%B %d, %Y") %></h5>
+              <h5 class="card-title mb-4"><%= item.send(heading).strftime("%B %d, %Y at %H:%M") %></h5>
             <% else %>
               <h5 class="card-title"><%= item.send(heading) %></h5>
             <% end %>
             <% fields.each do |field| %>
-              <% if defined?(field) %>
-                <% if field.include?('_') %>
-                  <p class="card-text"><small><%= field.capitalize.gsub!('_', ' ')%> : </small><%= item.send(field) %></p>
-                <% else %>
-                  <p class="card-text"><small><%= field.capitalize%> : </small> <%= item.send(field) %></p>
-                <% end %>
+              <% field_chain = field.split('.') %>
+              <% field_value = field_chain.reduce(item) { |obj, meth| obj.try(meth) } %>
+              <% cleaned_name = field_chain.last.tr('_', ' ').capitalize %>
+              <% if field_value.is_a?(DateTime) || field_value.is_a?(Time) %>
+                <p class="card-text"><small><%= cleaned_name %>:</small> <%= field_value.strftime("%B %d, %Y at %H:%M") %></p>
+              <% elsif field_value.is_a?(Date) %>
+                <p class="card-text"><small><%= cleaned_name %>:</small> <%= field_value.strftime("%B %d, %Y") %></p>
+              <% else %>
+                <p class="card-text"><small><%= cleaned_name %>:</small> <%= field_value || 'N/A' %></p>
               <% end %>
             <% end %>
-            <%= link_to "", item, class: "btn btn-link stretched-link" if current_user.admin? %>
+            <%= link_to "", item, class: "btn btn-link stretched-link" if !current_user.member? %>
           </div>
         </div>
       </div>

@@ -5,9 +5,9 @@ class HealthMetricsController < ApplicationController
 
   def index
     if current_user.admin? || current_user.trainer?
-      @health_metrics = HealthMetric.recent
+      @health_metrics = HealthMetric.all
     else
-      @health_metrics = current_user.health_metrics.recent
+      @health_metrics = current_user.health_metrics.all
     end
   end
 
@@ -58,7 +58,9 @@ class HealthMetricsController < ApplicationController
 
   def check_permissions
     case current_user.role
-    when 'admin' || 'trainer'
+    when 'admin'
+      true
+    when 'trainer'
       true
     else
       redirect_to root_path unless current_user == @health_metric.user

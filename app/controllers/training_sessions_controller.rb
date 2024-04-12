@@ -5,7 +5,7 @@ class TrainingSessionsController < ApplicationController
   before_action :set_users, only: [:new, :edit]
 
   def index
-    @training_sessions = TrainingSession.recent
+    @training_sessions = TrainingSession.includes(:user, :room_booking).all
   end
 
   def show
@@ -13,10 +13,12 @@ class TrainingSessionsController < ApplicationController
 
   def new
     @training_session = TrainingSession.new
+    @training_session.build_room_booking
   end
 
   def create
     @training_session = TrainingSession.new(training_session_params)
+
     if @training_session.save
       redirect_to @training_session, notice: 'Training session was successfully created'
     else
@@ -25,14 +27,14 @@ class TrainingSessionsController < ApplicationController
     end
   end
 
+
   def edit
   end
 
   def update
     if @training_session.update(training_session_params)
-      redirect_to @training_session, notice: 'Training session was successfully updated'
+      redirect_to @training_session, notice: 'Training session was successfully updated.'
     else
-      flash.now[:alert] = @training_session.errors.full_messages.to_sentence
       render :edit, status: :unprocessable_entity
     end
   end
@@ -49,12 +51,16 @@ class TrainingSessionsController < ApplicationController
   end
 
   def training_session_params
-    params.require(:training_session).permit(:name, :user_id, :room_name, :booking_time)
+    params.require(:training_session).permit(
+      :name,
+      :user_id,
+      room_booking_attributes: [:room_name, :booking_time]
+    )
   end
 
   def check_permissions
     unless current_user.admin? || current_user.trainer?
-      redirect_to root_path, alert: 'You do not have permission to perform this action'
+      redirect_to root_path, alert: 'You do not have permission to perform this action.'
     end
   end
 

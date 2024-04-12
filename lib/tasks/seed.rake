@@ -77,7 +77,7 @@ namespace :db do
     room_booking_seed += "INSERT INTO room_bookings (room_name, location, booking_time, created_at, updated_at) VALUES\n"
 
     room_bookings = []
-    30.times do
+    40.times do
       room_name = Faker::Number.between(from: 0, to: 7)
       location = "#{RoomBooking.room_names.key(room_name).to_s.humanize.capitalize} Room"
       booking_time = Faker::Time.between_dates(from: Date.today - 5.days, to: Date.today + 5.days).beginning_of_hour
@@ -104,14 +104,11 @@ namespace :db do
     training_session_seed += "INSERT INTO training_sessions (name, user_id, room_booking_id, created_at, updated_at) VALUES\n"
 
     training_sessions = []
-    # Get random RoomBooking ids and create training sessions using trainer ids 50 times
-    room_booking_ids = RoomBooking.pluck(:id)
-    trainer_ids = User.where(role: :trainer).pluck(:id)
-
-    50.times do
+    # For 30 of the room bookings, create a training session with a random trainer
+    room_booking_ids = RoomBooking.all.pluck(:id)
+    room_booking_ids.sample(30).each do |room_booking_id|
+      user_id = User.where(role: :trainer).pluck(:id).sample
       name = Faker::Number.between(from: 0, to: 5)
-      user_id = trainer_ids.sample
-      room_booking_id = room_booking_ids.sample
       created_at = Faker::Date.between(from: 1.week.ago, to: Date.today)
       updated_at = Faker::Date.between(from: created_at, to: Date.today)
 

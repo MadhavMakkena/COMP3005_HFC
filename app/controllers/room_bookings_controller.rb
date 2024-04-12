@@ -4,7 +4,7 @@ class RoomBookingsController < ApplicationController
   before_action :check_trainer_or_admin, except: [:show]
 
   def index
-    @room_bookings = RoomBooking.all
+    @room_bookings = RoomBooking.includes(:training_session).all
   end
 
   def show
@@ -46,7 +46,7 @@ class RoomBookingsController < ApplicationController
   private
 
   def set_room_booking
-    @room_booking = RoomBooking.find(params[:id])
+    @room_booking = RoomBooking.includes(:training_session).find(params[:id])
   end
 
   def room_booking_params

@@ -1,2 +1,12 @@
-<h1>RoomBookings#index</h1>
-<p>Find me in app/views/room_bookings/index.html.erb</p>
+<%= render partial: "shared/top_bar", locals: {
+  session: current_user,
+} %>
+
+<main class="container">
+  <section class="container mb-5">
+    <h2>Room Bookings</h2>
+    <%= render partial: "shared/index_layout", locals: { resource: @room_bookings, heading: "room_name", fields: [
+      'location',
+      'booking_time']} %>
+  </section>
+</main>
