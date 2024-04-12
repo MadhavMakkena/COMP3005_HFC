@@ -1,9 +1,13 @@
 <%= render partial: "shared/top_bar", locals: {
-  session: @session,
+  session: current_user,
 } %>
 
 <div class="d-flex h-100 justify-content-around mt-5">
-  <% if @session.member? %>
+  <% if current_user.member? %>
     <%= render partial: "shared/main_containers_members" %>
+  <% elsif current_user.trainer? %>
+    <%= render partial: "shared/main_containers_trainers" %>
+  <% elsif current_user.admin? %>
+    <%= render partial: "shared/main_containers_admins" %>
   <% end %>
 </div>

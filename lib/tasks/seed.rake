@@ -13,6 +13,8 @@ namespace :db do
   task build: :environment do
     Rake::Task['db:seedUser'].invoke
     Rake::Task['db:seedHealthMetric'].invoke
+    Rake::Task['db:seedRoomBooking'].invoke
+    Rake::Task['db:seedTrainingSession'].invoke
     puts "Database seeded successfully!"
   end
 
@@ -65,6 +67,64 @@ namespace :db do
       file.puts health_metrics_seed
     end
   end
+
+  desc "Seed Room Bookings"
+  task seedRoomBooking: :environment do
+    require 'active_record'
+    require 'faker'
+
+    room_booking_seed = "\n\n-- Seed Room Bookings --\n"
+    room_booking_seed += "INSERT INTO room_bookings (room_name, location, booking_time, created_at, updated_at) VALUES\n"
+
+    room_bookings = []
+    30.times do
+      room_name = Faker::Number.between(from: 0, to: 7)
+      location = "#{RoomBooking.room_names.key(room_name).to_s.humanize.capitalize} Room"
+      booking_time = Faker::Time.between_dates(from: Date.today - 5.days, to: Date.today + 5.days).beginning_of_hour
+      created_at = Faker::Date.between(from: 1.week.ago, to: Date.today)
+      updated_at = Faker::Date.between(from: created_at, to: Date.today)
+
+      room_bookings << "(#{room_name}, '#{location}', '#{booking_time}', '#{created_at}', '#{updated_at}')"
+    end
+
+    room_booking_seed += room_bookings.join(",\n") + ";" + "\n\n\n"
+    ActiveRecord::Base.connection.execute(room_booking_seed)
+
+    File.open("db/seeds.sql", "a") do |file|
+      file.puts room_booking_seed
+    end
+  end
+
+  desc "Seed Training Sessions"
+  task seedTrainingSession: :environment do
+    require 'active_record'
+    require 'faker'
+
+    training_session_seed = "\n\n-- Seed Training Sessions --\n"
+    training_session_seed += "INSERT INTO training_sessions (name, user_id, room_booking_id, created_at, updated_at) VALUES\n"
+
+    training_sessions = []
+    # Get random RoomBooking ids and create training sessions using trainer ids 50 times
+    room_booking_ids = RoomBooking.pluck(:id)
+    trainer_ids = User.where(role: :trainer).pluck(:id)
+
+    50.times do
+      name = Faker::Number.between(from: 0, to: 5)
+      user_id = trainer_ids.sample
+      room_booking_id = room_booking_ids.sample
+      created_at = Faker::Date.between(from: 1.week.ago, to: Date.today)
+      updated_at = Faker::Date.between(from: created_at, to: Date.today)
+
+      training_sessions << "('#{name}', #{user_id}, #{room_booking_id}, '#{created_at}', '#{updated_at}')"
+    end
+
+    training_session_seed += training_sessions.join(",\n") + ";" + "\n\n\n"
+
+    ActiveRecord::Base.connection.execute(training_session_seed)
+    File.open("db/seeds.sql", "a") do |file|
+      file.puts training_session_seed
+    end
+  end
 end
 
 def create_user_data(times, role)
@@ -75,8 +135,8 @@ def create_user_data(times, role)
     lastName = Faker::Name.last_name.gsub("'", "")
     email = Faker::Internet.email(name: "#{firstName} #{lastName}", separators: '.')
     dateOfBirth = Faker::Date.birthday(min_age: 18, max_age: 65)
-    created_at = Time.now.utc
-    updated_at = Time.now.utc
+    created_at = Faker::Date.between(from: 1.year.ago, to: Date.today)
+    updated_at = Faker::Date.between(from: created_at, to: Date.today)
 
     sql_fragment << "('#{firstName}', '#{lastName}', '#{email}', #{role}, '#{dateOfBirth}', '#{created_at}', '#{updated_at}')"
   end

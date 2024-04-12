@@ -6,32 +6,29 @@ class User < ApplicationRecord
   validates :role, inclusion: { in: roles.keys }
 
   before_validation :downcase_email, :capitalize_and_clean_name, :date_of_birth_check
-  before_save :downcase_email, :capitalize_and_clean_name, :date_of_birth_check
 
   has_many :health_metrics, dependent: :destroy
+
+  def name
+    "#{first_name} #{last_name}"
+  end
 
   private
 
   def date_of_birth_check
-    begin
-      parsed_date = Date.parse(date_of_birth.to_s)
-    rescue ArgumentError
-      errors.add(:date_of_birth, "is invalid. Please enter a date in YYYY-MM-DD format.")
-      return
-    end
+    errors.add(:date_of_birth, "is invalid. Please enter a date in YYYY-MM-DD format.") unless date_of_birth.is_a?(Date)
 
-    if parsed_date < 100.years.ago.to_date || parsed_date > 18.years.ago.to_date
+    if date_of_birth && (date_of_birth < 100.years.ago.to_date || date_of_birth > 18.years.ago.to_date)
       errors.add(:date_of_birth, "must be between 18 and 100 years old")
     end
   end
 
-
   def downcase_email
-    self.email = email.downcase
+    self.email = email.downcase if email.present?
   end
 
   def capitalize_and_clean_name
-    self.first_name = first_name.strip.gsub(/[^a-zA-Z]/, "").capitalize
-    self.last_name = last_name.strip.gsub(/[^a-zA-Z]/, "").capitalize
+    self.first_name = first_name.strip.gsub(/[^a-zA-Z]/, "").capitalize if first_name.present?
+    self.last_name = last_name.strip.gsub(/[^a-zA-Z]/, "").capitalize if last_name.present?
   end
 end

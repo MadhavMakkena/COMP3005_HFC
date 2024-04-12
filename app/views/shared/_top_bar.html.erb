@@ -5,8 +5,8 @@ HFC_ICON
 %>
 
 <% fields = [] %>
-<% if session && session.admin? %>
-  <% edit_user = link_to "Edit Users", users_path, class:"dropdown-item" %>
+<% if session && session.admin? || session.trainer? %>
+  <% edit_user = link_to "View Users", users_path, class:"dropdown-item" %>
   <% fields.push(edit_user) %>
 <% end %>
 

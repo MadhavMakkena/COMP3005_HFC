@@ -67,12 +67,79 @@ ALTER SEQUENCE public.health_metrics_id_seq OWNED BY public.health_metrics.id;
 
 
 --
+-- Name: room_bookings; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.room_bookings (
+    id bigint NOT NULL,
+    room_name integer DEFAULT 0 NOT NULL,
+    location text,
+    booking_time timestamp(6) without time zone DEFAULT (date_trunc('hour'::text, CURRENT_TIMESTAMP) + '01:00:00'::interval) NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: room_bookings_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.room_bookings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: room_bookings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.room_bookings_id_seq OWNED BY public.room_bookings.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.schema_migrations (
     version character varying NOT NULL
 );
+
+
+--
+-- Name: training_sessions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.training_sessions (
+    id bigint NOT NULL,
+    name integer DEFAULT 0 NOT NULL,
+    description text,
+    user_id bigint NOT NULL,
+    room_booking_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: training_sessions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.training_sessions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: training_sessions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.training_sessions_id_seq OWNED BY public.training_sessions.id;
 
 
 --
@@ -118,6 +185,20 @@ ALTER TABLE ONLY public.health_metrics ALTER COLUMN id SET DEFAULT nextval('publ
 
 
 --
+-- Name: room_bookings id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.room_bookings ALTER COLUMN id SET DEFAULT nextval('public.room_bookings_id_seq'::regclass);
+
+
+--
+-- Name: training_sessions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.training_sessions ALTER COLUMN id SET DEFAULT nextval('public.training_sessions_id_seq'::regclass);
+
+
+--
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -141,11 +222,27 @@ ALTER TABLE ONLY public.health_metrics
 
 
 --
+-- Name: room_bookings room_bookings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.room_bookings
+    ADD CONSTRAINT room_bookings_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: training_sessions training_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.training_sessions
+    ADD CONSTRAINT training_sessions_pkey PRIMARY KEY (id);
 
 
 --
@@ -164,11 +261,41 @@ CREATE INDEX index_health_metrics_on_user_id ON public.health_metrics USING btre
 
 
 --
+-- Name: index_training_sessions_on_room_booking_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_training_sessions_on_room_booking_id ON public.training_sessions USING btree (room_booking_id);
+
+
+--
+-- Name: index_training_sessions_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_training_sessions_on_user_id ON public.training_sessions USING btree (user_id);
+
+
+--
+-- Name: training_sessions fk_rails_0262e2cdf0; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.training_sessions
+    ADD CONSTRAINT fk_rails_0262e2cdf0 FOREIGN KEY (room_booking_id) REFERENCES public.room_bookings(id);
+
+
+--
 -- Name: health_metrics fk_rails_7789235dad; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.health_metrics
     ADD CONSTRAINT fk_rails_7789235dad FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: training_sessions fk_rails_7dfd856521; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.training_sessions
+    ADD CONSTRAINT fk_rails_7dfd856521 FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --
@@ -178,6 +305,8 @@ ALTER TABLE ONLY public.health_metrics
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240413153526'),
+('20240413153335'),
 ('20240412211113'),
 ('20240412013014');
 

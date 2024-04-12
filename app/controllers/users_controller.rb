@@ -1,29 +1,26 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_user, only: [:show, :edit, :update, :destroy]
+  before_action :check_permissions, only: [:show, :edit, :update, :destroy]
 
   def index
-    @session = current_user
-    @users = User.all
-
-    redirect_to root_path, alert: "You do not have permission to view this user" if !current_user.admin?
-  end
-
-  def show
-    @session = current_user
-    @user = User.find(params[:id])
-
-    unless current_user.admin? || current_user.trainer?
-      redirect_to root_path, alert: "You do not have permission to view this user" if current_user.id != @user.id
+    if current_user.admin?
+      @users = User.all
+    elsif current_user.trainer?
+      @users = User.where(role: :member)
+    else
+      redirect_to root_path, alert: "You do not have permission to view all users"
     end
   end
 
+  def show
+  end
+
   def new
-    @session = current_user
     @user = User.new
   end
 
   def create
-    @session = current_user
     @user = User.new(user_params)
 
     if @user.save
@@ -35,14 +32,9 @@ class UsersController < ApplicationController
   end
 
   def edit
-    @session = current_user
-    @user = User.find(params[:id])
   end
 
   def update
-    @session = current_user
-    @user = User.find(params[:id])
-
     if @user.update(user_params)
       redirect_to user_path(@user), notice: "User updated successfully"
     else
@@ -52,9 +44,6 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    @session = current_user
-    @user = User.find(params[:id])
-
     if current_user.admin? && current_user.id != @user.id
       @user.destroy
       redirect_to users_path, notice: "User deleted successfully"
@@ -65,7 +54,22 @@ class UsersController < ApplicationController
 
   private
 
+  def set_user
+    @user = User.find(params[:id])
+  end
+
   def user_params
     params.require(:user).permit(:first_name, :last_name, :email, :role, :date_of_birth)
+  end
+
+  def check_permissions
+    case current_user.role
+    when 'admin'
+      true
+    when 'trainer'
+      redirect_to root_path unless @user.role == 'member' || current_user == @user
+    else
+      redirect_to root_path unless current_user == @user
+    end
   end
 end

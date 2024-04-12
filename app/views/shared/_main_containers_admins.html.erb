@@ -1,0 +1,32 @@
+
+<div class="col-md-3 h-100">
+  <div class="row ml-3 mb-5 h-100">
+    <div class="col">
+      <div class="card h-100">
+        <div class="card-header">
+          <h5 class="card-title text-muted">Trainers</h5>
+        </div>
+        <div class="accordion" id="userAccordion">
+          <% @users.select { |user| user.role == 'trainer' }.each_with_index do |user, user_index| %>
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTrainer<%= user_index %>" aria-expanded="<%= user_index == 0 %>" aria-controls="collapseTrainer<%= user_index %>">
+                  <%= user.name %>
+                </button>
+              </h2>
+              <div id="collapseTrainer<%= user_index %>" class="accordion-collapse collapse" data-bs-parent="#userAccordion">
+                <div class="accordion-body">
+                  trainer
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-md-8 h-100">
+  HELLO WORLD THIS IS THE ADMIN PAGE, WELCOME TO THE ADMIN PAGE, HERE IS WHERE YOU CAN SEE ALL TRAINERS AND MEMBERS
+</div>
+

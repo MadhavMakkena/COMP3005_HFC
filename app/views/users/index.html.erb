@@ -1,5 +1,5 @@
 <%= render partial: "shared/top_bar", locals: {
-  session: @session,
+  session: current_user,
 } %>
 
 <main class="container">
@@ -8,13 +8,15 @@
     <%= render partial: "shared/index_layout", locals: { resource: @users.where(role: 0), heading: "first_name", fields: ["last_name", "role", "email"] } %>
   </section>
 
-  <section class="container mb-5">
-    <h2>Trainers</h2>
-    <%= render partial: "shared/index_layout", locals: { resource: @users.where(role: 1), heading: "first_name", fields: ["last_name", "role", "email"] } %>
-  </section>
+  <% if current_user.admin? %>
+    <section class="container mb-5">
+      <h2>Trainers</h2>
+      <%= render partial: "shared/index_layout", locals: { resource: @users.where(role: 1), heading: "first_name", fields: ["last_name", "role", "email"] } %>
+    </section>
 
-  <section class="container mb-5">
-    <h2>Admins</h2>
-    <%= render partial: "shared/index_layout", locals: { resource: @users.where(role: 2), heading: "first_name", fields: ["last_name", "role", "email"] } %>
-  </section>
+    <section class="container mb-5">
+      <h2>Admins</h2>
+      <%= render partial: "shared/index_layout", locals: { resource: @users.where(role: 2), heading: "first_name", fields: ["last_name", "role", "email"] } %>
+    </section>
+  <% end %>
 </main>

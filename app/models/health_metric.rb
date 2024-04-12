@@ -2,25 +2,17 @@ class HealthMetric < ApplicationRecord
   belongs_to :user
 
   validates :user_id, presence: true
+  validates :user, inclusion: { in: ->(health_metric) { User.member } }
 
-  before_validation :check_user_role, :calculate_bmi, :check_metric_ranges
-  before_save :check_user_role, :calculate_bmi, :check_metric_ranges
+  before_validation :check_metric_ranges
+  before_validation :calculate_bmi, if: -> { height.present? && weight.present? }
 
   scope :recent, -> { order(created_at: :desc) }
 
   private
 
-  def check_user_role
-    member_ids = User.where(role: 'member').pluck(:id)
-    unless member_ids.include?(user_id)
-      errors.add(:user_id, "must be a member user id")
-    end
-  end
-
   def calculate_bmi
-    if height.present? && weight.present? && height > 0
-      self.bmi = weight.to_f / (height * height)
-    end
+    self.bmi = weight.to_f / (height.to_f * height.to_f)
   end
 
   def check_metric_ranges

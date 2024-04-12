@@ -1,6 +1,6 @@
 <div class="container mt-5">
   <div class="row row-cols-3 g-4">
-    <% if @session.admin? %>
+    <% if current_user.admin? %>
       <div class="col align-self-center d-flex justify-content-center">
         <%= link_to "Add New #{resource.first.class.name.titleize}", new_polymorphic_path(resource.first.class), class: "btn btn-outline-primary btn-lg btn-block" %>
       </div>
@@ -23,7 +23,7 @@
                 <% end %>
               <% end %>
             <% end %>
-            <%= link_to "", item, class: "btn btn-link stretched-link" %>
+            <%= link_to "", item, class: "btn btn-link stretched-link" if current_user.admin? %>
           </div>
         </div>
       </div>
