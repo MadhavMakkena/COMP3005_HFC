@@ -30,6 +30,7 @@ Before you begin, ensure you have met the following requirements:
 - Relational Schema Diagram - `./relational_schema.png`
 
 ## Video Demo
+https://youtu.be/3KpgrYQCXMU 
 
 
 ## Conceptual Design (Assumptions)
