@@ -1,0 +1,63 @@
+<%= render partial: "shared/top_bar", locals: {
+  session: current_user,
+} %>
+
+<div class="container h-100">
+  <div class="row h-100 mt-5 justify-content-center align-items-center">
+    <div class="col mt-5 d-flex align-items-center justify-content-center">
+      <div class="card mt-5">
+        <%= form_with model: @reminder, local: true, html: { class: 'needs-validation', novalidate: true } do |form| %>
+          <div class="card-body mx-5 my-3">
+            <div class="form-group mb-4">
+              <div class="row">
+                <div class="col-md-4">
+                  <%= form.label :title, class: 'control-label mb-2' %>
+                </div>
+                <div class="col-md-8">
+                  <%= form.text_field :title, class: 'form-control form-control-lg' %>
+                </div>
+              </div>
+            </div>
+            <div class="form-group mb-4">
+              <div class="row">
+                <div class="col-md-4">
+                  <%= form.label :content, class: 'control-label mb-2' %>
+                </div>
+                <div class="col-md-8">
+                  <%= form.text_area :content, class: 'form-control form-control-lg' %>
+                </div>
+              </div>
+            </div>
+            <div class="form-group mb-4">
+              <div class="row">
+                <div class="col-md-4">
+                  <%= form.label :due_date, class: 'control-label mb-2' %>
+                </div>
+                <div class="col-md-8">
+                  <%= form.date_field :due_date, class: 'form-control form-control-lg' %>
+                </div>
+              </div>
+            </div>
+            <div class="form-group mb-4">
+              <div class="row">
+                <div class="col-md-4">
+                  <%= form.label :completed, class: 'control-label mb-2' %>
+                </div>
+                <div class="col-md-8">
+                  <%= form.check_box :completed, class: 'form-check-input' %>
+                  <label class="form-check-label">Completed</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer d-flex justify-content-end">
+            <div class="actions">
+              <%= form.submit "Submit", class: "btn btn-outline-primary" %>
+              <%= link_to "Cancel", root_path, class: "btn btn-outline-warning" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+<%= render partial: "shared/top_bar", locals: {
+  session: current_user,
+} %>
+
+<main class="container">
+  <section class="container mb-5">
+    <h2>Health Metrics</h2>
+    <%= render partial: "shared/index_layout", locals: { resource: @reminders, heading: "title", fields: [
+      'content',
+      'due_date',
+      'completed']} %>
+  </section>
+</main>

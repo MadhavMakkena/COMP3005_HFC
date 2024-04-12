@@ -5,7 +5,11 @@ class TrainingSessionsController < ApplicationController
   before_action :set_users, only: [:new, :edit]
 
   def index
-    @training_sessions = TrainingSession.includes(:user, :room_booking).all
+    if current_user.admin?
+      @training_sessions = TrainingSession.includes(:user, :room_booking).all
+    else
+      @training_sessions = TrainingSession.includes(:user, :room_booking).where(user: current_user)
+    end
   end
 
   def show

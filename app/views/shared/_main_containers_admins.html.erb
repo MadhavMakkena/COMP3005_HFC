@@ -1,7 +1,7 @@
 <div class="col-md-3 h-100">
   <div class="row ml-3 mb-5 h-100">
     <div class="col">
-      <div class="card h-100">
+      <div class="card">
         <div class="card-header">
           <h5 class="card-title text-muted">Trainers</h5>
         </div>
@@ -26,6 +26,27 @@
           <% end %>
         </div>
       </div>
+      <div class="card mt-3">
+        <div class="card-body">
+          <h5 class="card-title d-flex justify-content-between align-items-center">
+            <span class="text text-danger">Broken Equipment</span>
+            <%= link_to "All Equipment", equipments_path, class: 'btn btn-outline-secondary' %>
+          </h5>
+          <% Equipment.where(is_broken: true).each do |equipment| %>
+            <%= form_with model: equipment, url: equipment_path(equipment), method: :patch, local: true do |form| %>
+              <div class="d-flex align-items-center mb-3">
+                <%= button_tag(type: 'submit', class: 'btn btn-outline-success', title: 'Mark as Fixed') do %>
+                  <i class="bi bi-check-lg"></i>
+                <% end %>
+                <div class="ms-2">
+                  <%= form.label :name, equipment.name, class: 'form-label mb-0' %>
+                  <%= form.hidden_field :is_broken, value: false %>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -33,10 +54,43 @@
   <div class="h-100 d-flex flex-column">
     <div class="card mb-3" style="height: 30%; overflow-y: auto;">
       <div class="card-body">
-        <h5 class="card-title">Trainer's Announcements</h5>
-        <p class="card-text">
-          HELLO WORLD THIS IS THE TRAINERS PAGE, WELCOME TO THE TRAINERS PAGE, HERE IS WHERE YOU CAN SEE ALL THE MEMBERS AND THEIR HEALTH METRICS
-        </p>
+        <h3 class="card-title">
+          <%= link_to "Reminders", reminders_path, class: 'btn btn-outline-secondary' %>
+        </h3>
+        <% Reminder.where(completed: false).each do |reminder| %>
+          <%= form_with model: reminder, url: reminder_path(reminder), method: :patch, local: true do |form| %>
+            <div class="d-flex align-items-center mb-3">
+              <%= button_tag(type: 'submit', class: 'btn btn-outline-secondary', title: 'Mark as Completed') do %>
+                <i class="bi bi-check-lg"></i>
+              <% end %>
+              <div class="ms-2">
+                <%= form.label :completed, reminder.content, class: 'form-label mb-0' %>
+                <%= form.hidden_field :completed, value: true %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+      <div class="card-body">
+        <h5 class="card-title text-danger">
+          Overdue Payments
+        </h5>
+        <div class="container">
+          <div class="row">
+            <% User.includes(:payments).where(role: :member).where.not(id: Payment.where('payment_date > ?', 45.days.ago).select(:user_id)).each do |user| %>
+              <div class="col-md-2">
+                <%= form_with model: user, url: payment_path(user), method: :post, local: true do |form| %>
+                  <div class="card-body d-flex align-items-center">
+                    <%= button_tag(type: 'submit', class: 'btn btn-outline-success', title: 'Update Payment Date') do %>
+                      <i class="bi bi-calendar-check-fill"></i>
+                    <% end %>
+                    <div class="ms-2"><%= user.name %></div>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
       </div>
     </div>
     <div class="card flex-grow-1">

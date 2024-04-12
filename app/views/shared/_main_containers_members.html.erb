@@ -52,6 +52,19 @@
     </div>
     <div class="col-6 d-flex flex-column">
       <div class="card overflow-auto mb-3">
+        <div class="card-body scroll main_container2_0">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="card-title m-0">Announcements</h5>
+          </div>
+          <% if Payment.where(user_id: current_user.id).where('payment_date > ?', 45.days.ago).empty? %>
+            <h5 class="text-warning mb-3"> Your last payment was over 45 days ago. Please contact the admin staff !!</h5>
+          <% end %>
+          <% Announcement.where(for_user_type: current_user.role).each do |announcement| %>
+            <p class="card-text"> - <%= announcement.content %></p>
+          <% end %>
+        </div>
+      </div>
+      <div class="card overflow-auto mb-3">
         <div class="card-body scroll main_container2_1">
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h5 class="card-title m-0">Acomplishments</h5>

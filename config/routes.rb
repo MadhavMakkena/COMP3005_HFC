@@ -9,6 +9,10 @@ Rails.application.routes.draw do
   resources :training_sessions
   resources :room_bookings
   resources :member_sessions
+  resources :reminders
+  resources :announcements
+  resources :equipments
+  resources :payments
 
   # Login Routes
   post "login", to: "sessions#create"

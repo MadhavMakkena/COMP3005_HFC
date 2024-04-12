@@ -1,0 +1,14 @@
+<%= render partial: "shared/top_bar", locals: {
+  session: current_user,
+} %>
+
+<%= render partial: "shared/show_layout", locals: {
+  resource: @equipments,
+  fields: [
+    'name',
+    'description',
+    'is_broken',
+    'location'],
+  back_path: root_path,
+  options: { delete_button: true }
+} %>

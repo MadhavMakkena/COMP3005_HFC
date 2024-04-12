@@ -10,6 +10,7 @@ class User < ApplicationRecord
   has_many :health_metrics, dependent: :destroy
   has_many :training_sessions, dependent: :destroy
   has_many :member_sessions, dependent: :destroy
+  has_many :payments, dependent: :destroy
 
   def name
     "#{first_name} #{last_name}"

@@ -10,6 +10,11 @@ HFC_ICON
   <% fields.push(edit_user) %>
 <% end %>
 
+<% if session && session.admin? %>
+  <% new_announcements = link_to "View Announcements", announcements_path, class:"dropdown-item" %>
+  <% fields.push(new_announcements) %>
+<% end %>
+
 <% settings = link_to "Settings", edit_user_path(session), class:"dropdown-item" %>
 <% logout = button_to "Logout", logout_path, method: :delete, class:"dropdown-item" %>
 <% fields.push(settings, logout) %>

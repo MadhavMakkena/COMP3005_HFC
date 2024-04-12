@@ -16,6 +16,10 @@ namespace :db do
     Rake::Task['db:seedRoomBooking'].invoke
     Rake::Task['db:seedTrainingSession'].invoke
     Rake::Task['db:seedMemberSession'].invoke
+    Rake::Task['db:seedAnnouncement'].invoke
+    Rake::Task['db:seedReminder'].invoke
+    Rake::Task['db:seedEquipment'].invoke
+    Rake::Task['db:seedPayment'].invoke
     puts "Database seeded successfully!"
   end
 
@@ -150,6 +154,121 @@ namespace :db do
     ActiveRecord::Base.connection.execute(member_session_seed)
     File.open("db/seeds.sql", "a") do |file|
       file.puts member_session_seed
+    end
+  end
+
+  desc "Seed Announcements"
+  task seedAnnouncement: :environment do
+    require 'active_record'
+    require 'faker'
+
+    announcement_seed = "\n\n-- Seed Announcements --\n"
+    announcement_seed += "INSERT INTO announcements (title, content, for_user_type, created_at, updated_at) VALUES\n"
+
+    announcements = []
+    6.times do
+      title = Faker::Lorem.sentence(word_count: 2)
+      content = Faker::Lorem.paragraph(sentence_count: 3)
+      for_user_type = [0, 1].sample
+      created_at = Faker::Date.between(from: 1.week.ago, to: Date.today)
+      updated_at = Faker::Date.between(from: created_at, to: Date.today)
+
+      announcements << "('#{title}', '#{content}', #{for_user_type}, '#{created_at}', '#{updated_at}')"
+    end
+
+    announcement_seed += announcements.join(",\n") + ";" + "\n\n\n"
+
+    ActiveRecord::Base.connection.execute(announcement_seed)
+    File.open("db/seeds.sql", "a") do |file|
+      file.puts announcement_seed
+    end
+  end
+
+  desc "Seed Reminders"
+  task seedReminder: :environment do
+    require 'active_record'
+    require 'faker'
+
+    reminder_seed = "\n\n-- Seed Reminders --\n"
+    reminder_seed += "INSERT INTO reminders (title, content, due_date, created_at, updated_at) VALUES\n"
+
+    reminders = []
+    5.times do
+      title = Faker::Lorem.sentence(word_count: 2)
+      content = Faker::Lorem.paragraph(sentence_count: 3)
+      due_date = Faker::Date.between(from: Date.today, to: Date.today + 1.month)
+      created_at = Faker::Date.between(from: 1.week.ago, to: Date.today)
+      updated_at = Faker::Date.between(from: created_at, to: Date.today)
+
+      reminders << "('#{title}', '#{content}', '#{due_date}', '#{created_at}', '#{updated_at}')"
+    end
+
+    reminder_seed += reminders.join(",\n") + ";" + "\n\n\n"
+
+    ActiveRecord::Base.connection.execute(reminder_seed)
+    File.open("db/seeds.sql", "a") do |file|
+      file.puts reminder_seed
+    end
+  end
+
+  desc "Seed Equipment"
+  task seedEquipment: :environment do
+    require 'active_record'
+    require 'faker'
+
+    equipment_seed = "\n\n-- Seed Equipment --\n"
+    equipment_seed += "INSERT INTO equipment (name, description, location, is_broken, created_at, updated_at) VALUES\n"
+
+    equipments = []
+    50.times do
+      name = Faker::Appliance.equipment
+      description = Faker::Lorem.paragraph(sentence_count: 3)
+      location = Faker::Number.between(from: 0, to: 7)
+      is_broken = Faker::Boolean.boolean
+      created_at = Faker::Date.between(from: 1.week.ago, to: Date.today)
+      updated_at = Faker::Date.between(from: created_at, to: Date.today)
+
+      equipments << "('#{name}', '#{description}', #{location}, #{is_broken}, '#{created_at}', '#{updated_at}')"
+    end
+
+    equipment_seed += equipments.join(",\n") + ";" + "\n\n\n"
+
+    ActiveRecord::Base.connection.execute(equipment_seed)
+    File.open("db/seeds.sql", "a") do |file|
+      file.puts equipment_seed
+    end
+  end
+
+  desc "Seed Payments"
+  task seedPayment: :environment do
+    require 'active_record'
+    require 'faker'
+
+    payment_seed = "\n\n-- Seed Payments --\n"
+    payment_seed += "INSERT INTO payments (user_id, payment_date, created_at, updated_at) VALUES\n"
+
+    payments = []
+
+    member_ids = User.where(role: :member).pluck(:id)
+    member_ids.each do |user_id|
+      starting_date = Faker::Date.between(from: 1.years.ago, to: 2.months.ago)
+      ending_date = Faker::Date.between(from: 2.months.ago, to: Date.today)
+
+      while starting_date < ending_date
+        payment_date = starting_date
+        created_at = Faker::Date.between(from: 1.week.ago, to: Date.today)
+        updated_at = Faker::Date.between(from: created_at, to: Date.today)
+
+        payments << "(#{user_id}, '#{payment_date}', '#{created_at}', '#{updated_at}')"
+        starting_date = starting_date + 1.month
+      end
+    end
+
+    payment_seed += payments.join(",\n") + ";" + "\n\n\n"
+
+    ActiveRecord::Base.connection.execute(payment_seed)
+    File.open("db/seeds.sql", "a") do |file|
+      file.puts payment_seed
     end
   end
 end

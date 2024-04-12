@@ -1,0 +1,13 @@
+<%= render partial: "shared/top_bar", locals: {
+  session: current_user,
+} %>
+
+<%= render partial: "shared/show_layout", locals: {
+  resource: @announcement,
+  fields: [
+    'title',
+    'content',
+    'for_user_type'],
+  back_path: root_path,
+  options: { delete_button: true }
+} %>
