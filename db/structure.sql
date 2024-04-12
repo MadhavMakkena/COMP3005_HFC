@@ -67,6 +67,38 @@ ALTER SEQUENCE public.health_metrics_id_seq OWNED BY public.health_metrics.id;
 
 
 --
+-- Name: member_sessions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.member_sessions (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    training_session_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: member_sessions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.member_sessions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: member_sessions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.member_sessions_id_seq OWNED BY public.member_sessions.id;
+
+
+--
 -- Name: room_bookings; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -185,6 +217,13 @@ ALTER TABLE ONLY public.health_metrics ALTER COLUMN id SET DEFAULT nextval('publ
 
 
 --
+-- Name: member_sessions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.member_sessions ALTER COLUMN id SET DEFAULT nextval('public.member_sessions_id_seq'::regclass);
+
+
+--
 -- Name: room_bookings id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -219,6 +258,14 @@ ALTER TABLE ONLY public.ar_internal_metadata
 
 ALTER TABLE ONLY public.health_metrics
     ADD CONSTRAINT health_metrics_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: member_sessions member_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.member_sessions
+    ADD CONSTRAINT member_sessions_pkey PRIMARY KEY (id);
 
 
 --
@@ -261,6 +308,20 @@ CREATE INDEX index_health_metrics_on_user_id ON public.health_metrics USING btre
 
 
 --
+-- Name: index_member_sessions_on_training_session_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_member_sessions_on_training_session_id ON public.member_sessions USING btree (training_session_id);
+
+
+--
+-- Name: index_member_sessions_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_member_sessions_on_user_id ON public.member_sessions USING btree (user_id);
+
+
+--
 -- Name: index_training_sessions_on_room_booking_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -283,6 +344,14 @@ ALTER TABLE ONLY public.training_sessions
 
 
 --
+-- Name: member_sessions fk_rails_3da5dc37d9; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.member_sessions
+    ADD CONSTRAINT fk_rails_3da5dc37d9 FOREIGN KEY (training_session_id) REFERENCES public.training_sessions(id);
+
+
+--
 -- Name: health_metrics fk_rails_7789235dad; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -299,12 +368,21 @@ ALTER TABLE ONLY public.training_sessions
 
 
 --
+-- Name: member_sessions fk_rails_9aa185dc67; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.member_sessions
+    ADD CONSTRAINT fk_rails_9aa185dc67 FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240414013126'),
 ('20240413153526'),
 ('20240413153335'),
 ('20240412211113'),

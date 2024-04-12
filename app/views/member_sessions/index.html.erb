@@ -1,0 +1,13 @@
+<%= render partial: "shared/top_bar", locals: {
+  session: current_user,
+} %>
+
+<main class="container">
+  <section class="container mb-5">
+    <h2>Member Sessions</h2>
+    <%= render partial: "shared/index_layout", locals: { resource: @member_sessions, heading: "id", fields: [
+      'user.name',
+      'training_session.name',
+      'training_session.room_booking.booking_time']} %>
+  </section>
+</main>

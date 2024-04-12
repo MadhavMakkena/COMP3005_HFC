@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   resources :health_metrics
   resources :training_sessions
   resources :room_bookings
+  resources :member_sessions
 
   # Login Routes
   post "login", to: "sessions#create"

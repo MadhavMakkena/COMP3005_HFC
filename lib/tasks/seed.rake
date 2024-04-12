@@ -15,6 +15,7 @@ namespace :db do
     Rake::Task['db:seedHealthMetric'].invoke
     Rake::Task['db:seedRoomBooking'].invoke
     Rake::Task['db:seedTrainingSession'].invoke
+    Rake::Task['db:seedMemberSession'].invoke
     puts "Database seeded successfully!"
   end
 
@@ -120,6 +121,35 @@ namespace :db do
     ActiveRecord::Base.connection.execute(training_session_seed)
     File.open("db/seeds.sql", "a") do |file|
       file.puts training_session_seed
+    end
+  end
+
+  desc "Seed Member Session"
+  task seedMemberSession: :environment do
+    require 'active_record'
+    require 'faker'
+
+    member_session_seed = "\n\n-- Seed Member Sessions --\n"
+    member_session_seed += "INSERT INTO member_sessions (user_id, training_session_id, created_at, updated_at) VALUES\n"
+
+    member_sessions = []
+    # For 30 of the training sessions, create a member session with a random member
+    training_session_ids = TrainingSession.all.pluck(:id)
+    training_session_ids.sample(25).each do |training_session_id|
+      user_ids = User.where(role: :member).pluck(:id)
+      user_ids.sample(rand(1..10)).each do |user_id|
+        created_at = Faker::Date.between(from: 1.week.ago, to: Date.today)
+        updated_at = Faker::Date.between(from: created_at, to: Date.today)
+
+        member_sessions << "(#{user_id}, #{training_session_id}, '#{created_at}', '#{updated_at}')"
+      end
+    end
+
+    member_session_seed += member_sessions.join(",\n") + ";" + "\n\n\n"
+
+    ActiveRecord::Base.connection.execute(member_session_seed)
+    File.open("db/seeds.sql", "a") do |file|
+      file.puts member_session_seed
     end
   end
 end

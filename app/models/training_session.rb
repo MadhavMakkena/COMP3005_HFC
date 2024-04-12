@@ -12,6 +12,8 @@ class TrainingSession < ApplicationRecord
   belongs_to :room_booking
   accepts_nested_attributes_for :room_booking
 
+  has_many :member_sessions, dependent: :destroy
+
   validates :name, :user_id, presence: true
   validate :user_must_be_trainer
 
